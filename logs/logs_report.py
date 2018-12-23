@@ -14,10 +14,11 @@ class ExitCommand:
 
 
 class QueryCommand:
-    def __init__(self, message, query, formatter):
+    def __init__(self, message, query, result_title, row_formatter):
         self.message = message
         self.query = query
-        self.formatter = formatter
+        self.result_title = result_title
+        self.row_formatter = row_formatter
         self.keep_looping = True
 
     def select_query(self):
@@ -34,7 +35,11 @@ class QueryCommand:
     def execute(self):
         try:
             query_result = self.select_query()
-            return self.formatter(query_result)
+            formatted_rows = self.row_formatter(query_result)
+            return format_heading_body(
+                self.result_title,
+                '\n'.join(formatted_rows)
+            )
         # I catch it here since here I know better what to do
         except psycopg2.Error as db_error:
             return format_error(db_error)
@@ -52,40 +57,27 @@ def format_error(db_error):
 
 
 def format_most_popular_articles(articles):
-    lines = [
+    return [
         "\"{}\": {} views".format(title, count)
         for (title, count) in articles
     ]
-
-    return format_heading_body(
-        'Most Popular Articles',
-        '\n'.join(lines)
-    )
 
 
 def format_most_popular_authors(authors):
     max_len = max([len(author_row[1]) for author_row in authors])
     row_format = "{:" + str(max_len) + "}: {} views"
 
-    lines = [
+    return [
         row_format.format(name, count)
         for (author_id, name, count) in authors
     ]
 
-    return format_heading_body(
-        'Most Popular Author',
-        '\n'.join(lines)
-    )
-
 
 def format_day_with_most_errors(day_proportions):
-    day = day_proportions[0][0]
-    proportion = day_proportions[0][1]
-
-    return format_heading_body(
-        'Highest Error Rate Day',
+    return [
         '{:%Y-%m-%d} with {:.2f} %'.format(day, proportion)
-    )
+        for (day, proportion) in day_proportions
+    ]
 
 
 def show_options(options):
@@ -126,17 +118,21 @@ OPTIONS = [
     QueryCommand(
         'What are the most popular three articles of all time?',
         'SELECT title, visit_count FROM most_popular_articles LIMIT 3',
+        'Most Popular Articles',
         format_most_popular_articles
     ),
     QueryCommand(
         'Who are the most popular article authors of all time?',
         'SELECT * FROM most_popular_authors',
+        'Most Popular Author',
         format_most_popular_authors
     ),
     QueryCommand(
         'On which days did more than 1% of requests lead to errors?',
         'SELECT * FROM error_proportion_per_day '
+        'WHERE proportion >= 1.0'
         'ORDER BY proportion DESC LIMIT 1',
+        'Days with Error Proportion Greater than 1 %',
         format_day_with_most_errors
     ),
     ExitCommand()
