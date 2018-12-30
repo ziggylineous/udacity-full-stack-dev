@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Items</h1>
+{% for item in items %}
+<div>
+    <a href="#">{{ item.name }}</a>
+</div>
+{% endfor %}
+
+<a href="{{ url_for('new_item') }}">Create Item</a>
+{% endblock %}

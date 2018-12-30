@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Create a new Item</h1>
+<form action="/items/new" method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.name.label }}<br>
+        {{ form.name(size=60) }}
+        {% for error in form.name.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.description.label }}<br>
+        {{ form.description(rows=4, cols=80) }}
+        {% for error in form.description.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}
