@@ -3,7 +3,7 @@
 from app import app, db
 from app.models import User, Item
 from flask import render_template, request, flash, url_for, redirect
-from app.forms import NewItemForm
+from app.forms import ItemForm
 
 @app.route('/')
 @app.route('/items')
@@ -14,38 +14,69 @@ def show_items():
     )
 
 
-@app.route('/items/<string:item_name>')
-def view_item(item_name):
+@app.route('/items/<int:item_id>')
+def view_item(item_id):
+    item = Item.query.get_or_404(item_id)
+
+    return render_template(
+        'item.html',
+        title='Item Catalog: {}'.format(item.name),
+        item=item
+    )
+
+
+@app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
+def edit_item(item_id):
+    item = Item.query.get_or_404(item_id)
+    form = ItemForm(formdata=request.form, obj=item)
     
+    if form.validate_on_submit():
+        update_item(item, form)
+        flash('Updated item: {}'.format(item.name))
+        return redirect(url_for('view_item', item_id=item.id))
+    
+    return render_template(
+        'item-form.html',
+        form=form,
+        item_action='Edit'
+    )
 
 
 @app.route('/items/new', methods=['GET', 'POST'])
-def new_item():
-    form = NewItemForm()
+def create_item():
+    form = ItemForm()
     
     if form.validate_on_submit():
-        item = create_item(
-            form.name.data,
-            form.description.data
-        )    
+        item = _create_item(form)
         flash('Created new item: {}'.format(item.name))
         return redirect(url_for('show_items'))
-    
-    else:
-        return render_template(
-            'new-item.html',
-            title='Create New Item',
-            form=form
-        )
+
+    return render_template(
+        'item-form.html',
+        title='Create New Item',
+        form=form,
+        item_action='Create'
+    )
 
 
-def create_item(name, description):
+def _create_item(item_form):
     item = Item(
-        name=name,
-        description=description
+        name=item_form.name.data,
+        description=item_form.description.data
     )
         
     db.session.add(item)
     db.session.commit()
 
     return item
+
+
+@app.route('/items/<int:item_id>')
+def delete_item(item_id):
+    pass
+
+
+def update_item(item, item_form):
+    item_form.populate_obj(item)
+
+    db.session.commit()

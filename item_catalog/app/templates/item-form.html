@@ -1,8 +1,17 @@
 {% extends 'base.html' %}
 
+{% block title %}
+<h1>
+    {% if item_action == 'Create' %}
+    Create a new Item
+    {% else %}
+    Edit Item
+    {% endif %}
+</h1>
+{% endblock %}
+
 {% block content %}
-<h1>Create a new Item</h1>
-<form action="/items/new" method="POST">
+<form action="" method="POST">
     {{ form.hidden_tag() }}
     <div>
         {{ form.name.label }}<br>
@@ -21,7 +30,7 @@
     </div>
 
     <div>
-        {{ form.submit() }}
+        <input type="submit" value="{{ item_action }}">
     </div>
 </form>
 {% endblock %}
