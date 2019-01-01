@@ -42,6 +42,12 @@ def edit_item(item_id):
     )
 
 
+def update_item(item, item_form):
+    item_form.populate_obj(item)
+
+    db.session.commit()
+
+
 @app.route('/items/new', methods=['GET', 'POST'])
 def create_item():
     form = ItemForm()
@@ -71,12 +77,11 @@ def _create_item(item_form):
     return item
 
 
-@app.route('/items/<int:item_id>')
+@app.route('/items/<int:item_id>/delete', methods=['DELETE'])
 def delete_item(item_id):
-    pass
-
-
-def update_item(item, item_form):
-    item_form.populate_obj(item)
-
+    print('delete item {}'.format(item_id))
+    item = Item.query.get_or_404(item_id)
+    print("item found: {}".format(item))
+    db.session.delete(item)
     db.session.commit()
+    return ''

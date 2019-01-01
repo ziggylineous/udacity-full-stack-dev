@@ -6,6 +6,56 @@
 
 {% block content %}
 <p>{{ item.description }}</p>
-<a href="{{ url_for('edit_item', item_id=item.id) }}">Edit</a>
-<a href="{{ url_for('delete_item', item_id=item.id) }}">Delete</a>
+<a id="edit" href="{{ url_for('edit_item', item_id=item.id) }}">Edit</a>
+<a id="delete" href="#">Delete</a>
+
+<div id="deleteConfirmation" title="Delete {{ item.name }}?">
+<p>Are you sure you want to delete {{ item.name }}?</p>
+</div>
+{% endblock %}
+
+{% block behaviour %}
+<script type="text/javascript">
+
+function deleteItem() {
+    console.log('sending delete...');
+
+    $.ajax({
+        url: "{{ url_for('delete_item', item_id=item.id) }}",
+        method: 'DELETE',
+        // data: '{{ item.id }}',
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log('error deleting item: ' + errorThrown);
+            hideDialog();
+        },
+        success: function(data, textStatus, jqXHR) {
+            window.location.replace("{{ url_for('show_items') }}");
+        }
+    })
+}
+
+function showDialog() {
+    $('#deleteConfirmation').dialog({
+        buttons: [{
+                text: "No",
+                click: hideDialog
+            }, {
+                text: "Yes",
+                click: deleteItem
+            }
+        ],
+        closeOnEscape: false,
+        modal:true
+    });
+}
+
+function hideDialog() {
+    $('#deleteConfirmation').dialog( "close" );
+}
+
+$('#delete').click(function(event) {
+    event.preventDefault();
+    showDialog();
+})
+</script>
 {% endblock %}
