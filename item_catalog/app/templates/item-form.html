@@ -30,6 +30,14 @@
     </div>
 
     <div>
+        {{ form.category_id.label }}<br>
+        {{ form.category_id() }}
+        {% for error in form.category_id.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
         <input type="submit" value="{{ item_action }}">
     </div>
 </form>

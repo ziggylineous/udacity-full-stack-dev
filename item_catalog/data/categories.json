@@ -1,0 +1,14 @@
+[
+    {
+        "__type__": "Category",
+        "name": "Keyboard"
+    },
+    {
+        "__type__": "Category",
+        "name": "Mice"
+    },
+    {
+        "__type__": "Category",
+        "name": "Headphones"
+    }
+]

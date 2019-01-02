@@ -1,7 +1,7 @@
 # the first app is the package,
 # the second is the Flask application
 from app import app, db
-from app.models import User, Item
+from app.models import User, Item, Category
 from flask import render_template, request, flash, url_for, redirect
 from app.forms import ItemForm
 
@@ -44,6 +44,7 @@ def edit_item(item_id):
 
 def update_item(item, item_form):
     item_form.populate_obj(item)
+    item.category = Category.query.filter_by(id=item.category_id).one()
 
     db.session.commit()
 
@@ -66,9 +67,14 @@ def create_item():
 
 
 def _create_item(item_form):
+    category_id = item_form.category_id.data
+    cat = Category.query.filter_by(id=category_id).one()
+    
     item = Item(
         name=item_form.name.data,
-        description=item_form.description.data
+        description=item_form.description.data,
+        category_id=category_id,
+        category=cat
     )
         
     db.session.add(item)
@@ -79,9 +85,12 @@ def _create_item(item_form):
 
 @app.route('/items/<int:item_id>/delete', methods=['DELETE'])
 def delete_item(item_id):
-    print('delete item {}'.format(item_id))
     item = Item.query.get_or_404(item_id)
-    print("item found: {}".format(item))
+    item_name = item.name
+
     db.session.delete(item)
     db.session.commit()
+
+    flash('Deleted item: {}'.format(item_name))
+
     return ''
