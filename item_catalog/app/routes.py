@@ -1,9 +1,11 @@
 # the first app is the package,
 # the second is the Flask application
-from app import app, db
+from app import app, db, images
 from app.models import User, Item, Category
 from flask import render_template, request, flash, url_for, redirect
+import os.path
 from app.forms import ItemForm
+
 
 @app.route('/')
 @app.route('/items')
@@ -31,7 +33,8 @@ def edit_item(item_id):
     form = ItemForm(formdata=request.form, obj=item)
     
     if form.validate_on_submit():
-        update_item(item, form)
+        filename = save_image_get_filename(form.image.data)
+        update_item(item, form, filename)
         flash('Updated item: {}'.format(item.name))
         return redirect(url_for('view_item', item_id=item.id))
     
@@ -42,9 +45,10 @@ def edit_item(item_id):
     )
 
 
-def update_item(item, item_form):
+def update_item(item, item_form, filename):
     item_form.populate_obj(item)
     item.category = Category.query.filter_by(id=item.category_id).one()
+    item.image = filename
 
     db.session.commit()
 
@@ -54,7 +58,8 @@ def create_item():
     form = ItemForm()
     
     if form.validate_on_submit():
-        item = _create_item(form)
+        filename = save_image_get_filename(form.image.data)
+        item = _create_item(form, filename)
         flash('Created new item: {}'.format(item.name))
         return redirect(url_for('show_items'))
 
@@ -66,7 +71,7 @@ def create_item():
     )
 
 
-def _create_item(item_form):
+def _create_item(item_form, filename):
     category_id = item_form.category_id.data
     cat = Category.query.filter_by(id=category_id).one()
     
@@ -74,13 +79,26 @@ def _create_item(item_form):
         name=item_form.name.data,
         description=item_form.description.data,
         category_id=category_id,
-        category=cat
+        category=cat,
+        image=filename
     )
         
     db.session.add(item)
     db.session.commit()
 
     return item
+
+
+def save_image_get_filename(image_file):    
+    if image_file:
+        filename = images.save(
+            image_file,
+            name=image_file.filename
+        )
+        
+        return filename
+    
+    return ''
 
 
 @app.route('/items/<int:item_id>/delete', methods=['DELETE'])

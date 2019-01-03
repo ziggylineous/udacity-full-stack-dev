@@ -2,3 +2,7 @@ item_catalog.db
 __pycache__
 .vscode
 lang_tests.py
+images/*.png
+images/*.jpg
+images/*.xcf
+!images/item_placeholder.png

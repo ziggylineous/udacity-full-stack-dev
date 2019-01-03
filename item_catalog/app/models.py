@@ -1,4 +1,4 @@
-from app import db
+from app import db, images
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -18,7 +18,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), index=True, unique=True)
     description = db.Column(db.String())
-    picture = db.Column(db.String())
+    image = db.Column(db.String())
     
     category_id = db.Column(
         db.Integer,
@@ -32,6 +32,11 @@ class Item(db.Model):
 
     def __repr__(self):
         return '<Item {}>'.format(self.name)
+    
+    @property
+    def image_url(self):
+        filename = self.image if self.image else 'item_placeholder.png'
+        return images.url(filename)
 
 
 class Category(db.Model):

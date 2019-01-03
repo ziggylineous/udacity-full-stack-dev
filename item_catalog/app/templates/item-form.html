@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-<form action="" method="POST">
+<form action="" method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div>
         {{ form.name.label }}<br>
@@ -33,6 +33,14 @@
         {{ form.category_id.label }}<br>
         {{ form.category_id() }}
         {% for error in form.category_id.errors %}
+        <span class="form-error">{{ error }}</span>
+        {% endfor %}
+    </div>
+
+    <div>
+        {{ form.image.label }}<br>
+        {{ form.image() }}
+        {% for error in form.image.errors %}
         <span class="form-error">{{ error }}</span>
         {% endfor %}
     </div>
