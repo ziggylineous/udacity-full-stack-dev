@@ -3,13 +3,16 @@
 from app import app, db, images
 from app.models import User, Item, Category
 from flask import render_template, request, flash, url_for, redirect
-import os.path
 from app.forms import ItemForm
 
 
+# item CRUD routes
 @app.route('/')
 @app.route('/items')
 def show_items():
+    """
+    Shows all items (TODO: paginate)
+    """
     return render_template(
         'items.html',
         items=Item.query.all()
@@ -18,6 +21,9 @@ def show_items():
 
 @app.route('/items/<int:item_id>')
 def view_item(item_id):
+    """
+    Show item's page
+    """
     item = Item.query.get_or_404(item_id)
 
     return render_template(
@@ -46,6 +52,12 @@ def edit_item(item_id):
 
 
 def update_item(item, item_form, filename):
+    """
+    Update an item with form data.
+    :param item: the item to update
+    :param item_form: the item's form
+    :param filename: the item's image name
+    """
     item_form.populate_obj(item)
     item.category = Category.query.filter_by(id=item.category_id).one()
     item.image = filename

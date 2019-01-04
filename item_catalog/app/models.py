@@ -8,6 +8,24 @@ class User(db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
+    @classmethod
+    def from_email(cls, email):
+        return cls.query.filter_by(email=email).first()
+
+
+    @staticmethod
+    def create_and_save(username, email, password=''):
+        new_user = User(
+            username=username,
+            email=email,
+            password_hash='todo'
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return new_user
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 

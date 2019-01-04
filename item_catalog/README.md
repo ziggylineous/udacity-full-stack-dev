@@ -6,6 +6,8 @@
     - flask-sqlalchemy (simplifies queries, creates a scoped_session)
     - flask-wtf (form validation)
     - flask-uploads
+    - oauth2client
+    - requests
 2. Set the `FLASK_APP` environment variable to `item_catalog.py`
 3. Standing at item_catalog, run `python db.py` to create the database and load some categories
 

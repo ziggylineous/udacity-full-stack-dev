@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block head_hook %}
+<script src="//apis.google.com/js/platform.js?onload=start"></script>
+{% endblock %}
+
+{% block content %}
+<div id="signinButton">
+    <span class="g-signin"
+        data-scope="openid email"
+        data-clientid="1062098416199-jquvah9s2eo2kppldl7no7l42aeboum8.apps.googleusercontent.com"
+        data-redirecturi="postmessage"
+        data-accesstype="offline"
+        data-cookiepolicy="single_host_origin"
+        data-callback="signInCallback"
+        data-approvalprompt="force">
+  </span>
+</div>
+
+<div id="authenticationResult">
+</div>
+{% endblock %}
+
+{% block behaviour %}
+<script type="text/javascript">
+    function signInCallback(authResult) {
+        if (authResult['code']) {
+            $('#signinButton').attr('style', 'display: none');
+
+            $.ajax({
+                url: 'gconnect',
+                type: 'POST',
+                data: JSON.stringify({
+                    code: authResult['code'],
+                    state: "{{ state }}"
+                }),
+                contentType: 'application/json; charset=utf-8',
+                success: function(result) {
+                    if (result) {
+                        let successfulLoginMessage = `
+<h1>Login Successful!</h1>
+<p>You logged as ${result.username}</p>
+<img src="${result.picture}" alt="Picture of you">
+<p>Redirecting to items...</p>`;
+
+                        $('#authenticationResult').html(successfulLoginMessage);
+
+                        setTimeout(function() {
+                            window.location.href = "{{ url_for('show_items') }}";
+                        }, 4000);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.log('gconnect error:');
+                    console.log('status: ' + status)
+                    console.log(error);
+                    $('#result').html(status + ' ' + error);
+                }
+            })
+        } else if (authResult['error']) {
+            console.log("there was an error: " + authResult['error'])
+        } else {
+            let message = 'Failed to make a server-side call. Check your configuration and console.';
+            $('#authenticationResult').html(message);
+        }
+    }
+</script>
+{% endblock %}
