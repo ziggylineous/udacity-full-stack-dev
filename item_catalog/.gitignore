@@ -6,3 +6,5 @@ images/*.png
 images/*.jpg
 images/*.xcf
 !images/item_placeholder.png
+.idea/
+.DS_Store
