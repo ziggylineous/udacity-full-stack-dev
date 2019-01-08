@@ -4,6 +4,7 @@ from app import app, db, images
 from app.models import User, Item, Category
 from flask import render_template, request, flash, url_for, redirect
 from app.forms import ItemForm
+from flask_login import login_required
 
 
 # item CRUD routes
@@ -34,6 +35,7 @@ def view_item(item_id):
 
 
 @app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
     form = ItemForm(formdata=request.form, obj=item)
@@ -66,6 +68,7 @@ def update_item(item, item_form, filename):
 
 
 @app.route('/items/new', methods=['GET', 'POST'])
+@login_required
 def create_item():
     form = ItemForm()
     
@@ -114,6 +117,7 @@ def save_image_get_filename(image_file):
 
 
 @app.route('/items/<int:item_id>/delete', methods=['DELETE'])
+@login_required
 def delete_item(item_id):
     item = Item.query.get_or_404(item_id)
     item_name = item.name

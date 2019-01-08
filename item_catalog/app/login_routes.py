@@ -1,7 +1,9 @@
-from app import app, CLIENT_ID
-from app.models import User
-from flask import render_template, request, session, jsonify, flash
+from flask import render_template, request, session, jsonify, flash, redirect, url_for
+from flask_login import current_user, login_user, logout_user
 import requests
+from app import app, CLIENT_ID, login
+from app.models import User
+from app.forms import LoginForm
 
 # google authentication
 import string
@@ -10,6 +12,48 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
 
+@login.user_loader
+def load_user(id_str):
+    return User.query.get(int(id_str))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('show_items'))
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            return redirect(url_for('show_items'))
+        else:
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+
+
+    session['state'] = generate_session_token()
+
+    return render_template(
+        'login.html',
+        title='Sign In',
+        state=session['state'],
+        form=form
+    )
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    gdisconnect()
+    logout_user()
+    session.clear()
+    return "true"
+
+
+# google oauth
 def json_response(message, status_code):
     response = jsonify(message=message)
     response.status_code = status_code
@@ -28,16 +72,6 @@ def generate_session_token():
     )
 
 
-@app.route('/login')
-def login():
-    session['state'] = generate_session_token()
-
-    return render_template(
-        'login.html',
-        state=session['state']
-    )
-
-
 def check_state():
     req_state = request.json.get('state')
     login_state = session['state']
@@ -45,12 +79,11 @@ def check_state():
     return req_state == login_state
 
 
-def get_credentials():
-    one_time_code_from_client = request.json.get('code')
+def exchange_auth_code(auth_code):
     oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
     oauth_flow.redirect_uri = 'postmessage'
 
-    return oauth_flow.step2_exchange(one_time_code_from_client)
+    return oauth_flow.step2_exchange(auth_code)
 
 
 def check_credentials_with_oauth(credentials_access_token, credentials_gplus_id):
@@ -95,7 +128,7 @@ def is_already_authenticated(gplus_id):
     return stored_access_token is not None and gplus_id == stored_gplus_id
 
 
-def get_google_userinfo(access_token):
+def fetch_google_userinfo(access_token):
     USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo'
     answer = requests.get(
         USER_INFO_URL,
@@ -125,9 +158,9 @@ def gconnect():
         return json_response('Invalid session state token', 401)
 
     try:
-        credentials = get_credentials()
+        credentials = exchange_auth_code(request.json.get('code'))
     except FlowExchangeError:
-        return json_response('Couldnt\' upgrade authorizzation code', 401)
+        return json_response('Couldnt\' upgrade authorization code', 401)
 
     access_token = credentials.access_token
     gplus_id = credentials.id_token['sub']
@@ -138,52 +171,47 @@ def gconnect():
         return error_response
 
     if is_already_authenticated(gplus_id):
-        return json_response('Current user is already connected.', 200)
+        user = User.query.filter_by(id=session['user_id']).one()
+        return jsonify(
+            username=user.username,
+            picture=session['picture'],
+            message='Current user is already connected.'
+        )
 
     # save authentication data
     session['access_token'] = access_token
     session['gplus_id'] = gplus_id
 
-    data = get_google_userinfo(access_token)
+    data = fetch_google_userinfo(access_token)
     user = user_from_userinfo(data)
     session['user_id'] = user.id
     session['email'] = user.email
     session['picture'] = data['picture']
+    login_user(user)
 
     flash("You're logged as {} (google account)".format(user.username))
 
     return jsonify(
+        message='successful authentication',
         username=user.username,
         picture=data['picture']
     )
 
 
-def is_logged_in():
-    return 'user' in session
-
-
-@app.route('/gdisconnect')
 def gdisconnect():
-    access_token = session['access_token']
+    access_token = session.get('access_token')
 
-    if not access_token:
-        print('no access token')
-        return json_response('Have no access token', 401)
+    if access_token:
+        print('gdisconnect(): access token is {}'.format(access_token))
+        print('User name: {}'.format(session['user'].name))
 
-    print('gdisconnect(): access token is {}'.format(access_token))
-    print('User name: {}'.format(session['user'].name))
+        disconnect_response = requests.post(
+            'https://accounts.google.com/o/oauth2/revoke',
+            params={'token': access_token},
+            headers={'content-type': 'application/x-www-form-urlencoded'}
+        )
 
-    respo = requests.post(
-        'https://accounts.google.com/o/oauth2/revoke',
-        params={'token': access_token},
-        headers={'content-type': 'application/x-www-form-urlencoded'}
-    )
-
-    if respo.status_code == 200:
-        session.clear()
-        return json_response('Successfully disconnected.', 200)
-    else:
-        print(respo)
-        print(respo.text)
-        session.clear()
-        return json_response('Failed to revoke token for given user', respo.status_code)
+        if disconnect_response.status_code != 200:
+            print('gdisconnect error')
+            print(disconnect_response)
+            print(disconnect_response.text)

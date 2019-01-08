@@ -1,5 +1,5 @@
 from app import db
-from app.models import Category
+from app.models import User, Category, Item
 from pathlib import Path
 import json
 
@@ -12,19 +12,36 @@ def drop_db():
         print('dropped db')
 
 
-def decode_category(dct):
-    if '__type__' in dct and dct['__type__'] == 'Category':
-        return Category(name=dct['name'])
-    
+def decode_models(dct):
+    if '__type__' in dct:
+        if dct['__type__'] == 'Category':
+            return Category(name=dct['name'])
+
+        if dct['__type__'] == 'User':
+            user = User(
+                username=dct['username'],
+                email=dct['email']
+            )
+            user.set_password(dct['password'])
+            return user
+
     return dct
 
 
-def load_categories():
-    categories_file = open('data/categories.json', 'r')
-    categories_json = json.load(categories_file, object_hook=decode_category)
 
-    for cat in categories_json:
+def load_init_data():
+    initial_models_file = open('data/db_init_data.json', 'r')
+    models_json = json.load(
+        initial_models_file,
+        object_hook=decode_models
+    )
+
+    for user in models_json['users']:
+        db.session.add(user)
+
+    for cat in models_json['categories']:
         db.session.add(cat)
+
     
     db.session.commit()
 
@@ -32,5 +49,4 @@ def load_categories():
 if __name__ == '__main__':
     drop_db()
     db.create_all()
-    load_categories()
-        
+    load_init_data()

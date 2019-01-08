@@ -1,9 +1,16 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, TextAreaField, SubmitField, SelectField
+from wtforms import StringField, TextAreaField, SubmitField, SelectField, PasswordField
 from wtforms.validators import DataRequired
 from app.models import Category
 from app import images
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Your Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Sign In')
+
 
 class ItemForm(FlaskForm):
     name = StringField('Item Name', validators=[DataRequired()])

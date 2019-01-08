@@ -1,6 +1,10 @@
-from app import db, images
+from flask_login import UserMixin
 
-class User(db.Model):
+from app import db, images
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -8,10 +12,15 @@ class User(db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
+    def set_password(self, plaintext_pw):
+        self.password_hash = generate_password_hash(plaintext_pw)
+
+    def check_password(self, plaintext_pw):
+        return check_password_hash(self.password_hash, plaintext_pw)
+
     @classmethod
     def from_email(cls, email):
         return cls.query.filter_by(email=email).first()
-
 
     @staticmethod
     def create_and_save(username, email, password=''):
