@@ -1,15 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'categories-layout.html' %}
 
-{% block title %}
-<h1>Items</h1>
-{% endblock %}
+{% block contents %}
+<nav id="categories">
+    <h2>Categories</h2>
 
-{% block content %}
-{% for item in items %}
-<div>
-    <a href="{{ url_for('view_item', item_id=item.id) }}">{{ item.name }}</a>
-</div>
-{% endfor %}
+    <ul>
+        <li>
+            <a href="#">cat 1</a>
+        </li>
+    </ul>
+</nav>
 
-<a href="{{ url_for('create_item') }}">Create Item</a>
+<main id="items">
+    <h2>Items</h2>
+
+    <ul>
+        {% for item in items %}
+        <li>
+            <a href="{{ url_for('view_item', item_id=item.id) }}">{{ item.name }}</a>
+            <span class="item-category">{{ item.category.name }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('create_item') }}">Create Item</a>
+    {% endif %}
+</main>
 {% endblock %}

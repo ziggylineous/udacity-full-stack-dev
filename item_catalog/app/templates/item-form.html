@@ -1,16 +1,14 @@
-{% extends 'base.html' %}
+{% extends 'simple-layout.html' %}
 
-{% block title %}
-<h1>
+{% block contents %}
+<h2>
     {% if item_action == 'Create' %}
     Create a new Item
     {% else %}
     Edit Item
     {% endif %}
-</h1>
-{% endblock %}
+</h2>
 
-{% block content %}
 <form action="" method="POST" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div>

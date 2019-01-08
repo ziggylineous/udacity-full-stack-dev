@@ -1,3 +1,150 @@
+body {
+    font-size: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #CCC;
+    margin: 0;
+}
+
+#header {
+    background-color: darkblue;
+    color: white;
+    height: 10em;
+    display: flex;
+    align-items: center;
+}
+
+#header h1 {
+    font-size: 5em;
+    line-height: 2em;
+}
+
+
+/* log-in-out button */
+button#log-in-out {
+    color: white;
+    background-color: orangered;
+    text-align: center;
+    text-decoration: none;
+    font-size: 2em;
+    padding: 0.5em;
+    margin-left: auto;
+    border: 5px solid orange;
+    border-radius: 0.375em;
+}
+
+button#log-in-out:hover {
+    background-color: rgb(240, 60, 0);
+}
+
+button#log-in-out:active {
+    background-color: rgb(225, 50, 0);
+    color: darkblue;
+}
+/* top bar end */
+
+
+
+
+/* main content */
+#contents {
+    background-color: #EEE;
+    width: 75%;
+    margin: 2em auto;
+    border-radius: 1em;
+    min-height: 50em;
+    border: 1px solid #999;
+}
+
+#contents.categories-layout {
+    display: flex;
+}
+
+.align-main-left {
+    margin-left: 12.5%;
+    /* (100 - 75 = 25) / 2 */
+}
+
+.align-main-right {
+    margin-right: 12.5%;
+    /* 25 / 2 */
+}
+
+h2 {
+    color: darkblue;
+    font-weight: bold;
+    font-size: 3em;
+    margin: 0 0 .33em 0;
+}
+
+
+
+
+/* categories ~ items layout */
+nav#categories {
+    flex: 1;
+    padding: 2em 2em;
+    border-right: 1px solid #CCC;
+}
+
+main#items {
+    flex: 3;
+    padding: 2em 2em;
+}
+
+#categories ul,
+#items ul {
+    list-style-type: none;
+    font-size: 1.75em;
+    margin: 0;
+    padding: 0;
+    line-height: 1.25em;
+}
+
+#categories ul a,
+#items ul a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#categories ul a:link,
+#items ul a:link {
+    color: orangered;
+}
+
+#categories ul a:visited,
+#items ul a:visited {
+    color: brown;
+}
+
+#categories ul a:hover,
+#items ul a:hover,
+#categories ul a:focus,
+#items ul a:focus {
+    color: darkblue;
+}
+
+#categories ul a:active,
+#items ul a:active {
+    color: darkblue;
+    background-color: orange;
+}
+
+#items ul span.item-category {
+    color: #999;
+    font-style: italic;
+}
+
+
+
+
+/* footer styles */
+footer {
+    color: darkblue;
+    text-align: center;
+    font-size: 1.5em;
+    letter-spacing: 2px;
+}
+
 #deleteConfirmation {
     display: none;
 }

@@ -22,8 +22,21 @@
             crossorigin="anonymous">
         </script>
     </head>
+
+
     <body>
-        {% block title %}{% endblock %}
+        <div id="header">
+            <h1 class="align-main-left">Item Catalog</h1>
+            <!--<a href="{{ url_for('show_items') }}">Home</a>-->
+            <button class="align-main-right" id="log-in-out">
+                {% if current_user.is_anonymous %}
+                Log In
+                {% else %}
+                Log Out
+                {% endif %}
+            </button>
+        </div>
+
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <div class="flash">
@@ -35,8 +48,34 @@
         </div>
         {% endif %}
         {% endwith %}
-        {% block content %}{% endblock %}
 
+        {% block contents_layout %}{% endblock %}
+
+        <footer>Udacity Full Stack Nanodegree - Item Catalog</footer>
+
+        <script>
+            function gotoLogIn() {
+                window.location.href = '{{ url_for('login') }}';
+            }
+
+            function logOut() {
+                $.post(
+                    '{{ url_for('logout') }}',
+                    function(data) {
+                        console.log('logout result ' + data);
+                        window.location.replace('{{ url_for('show_items') }}');
+                    }
+                );
+            }
+
+            $('button#log-in-out').click(
+                {% if current_user.is_anonymous %}
+                gotoLogIn
+                {% else %}
+                logOut
+                {% endif %}
+            );
+        </script>
         {% block behaviour %}
         {% endblock %}
     </body>
