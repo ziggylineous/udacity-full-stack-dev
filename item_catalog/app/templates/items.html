@@ -5,9 +5,11 @@
     <h2>Categories</h2>
 
     <ul>
+        {% for category in categories %}
         <li>
-            <a href="#">cat 1</a>
+            <a href="{{ url_for('category_items', category_name=category.name)}}">{{ category.name }}</a>
         </li>
+        {% endfor %}
     </ul>
 </nav>
 
@@ -18,7 +20,9 @@
         {% for item in items %}
         <li>
             <a href="{{ url_for('view_item', item_id=item.id) }}">{{ item.name }}</a>
+            {% if not category %}
             <span class="item-category">{{ item.category.name }}</span>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>

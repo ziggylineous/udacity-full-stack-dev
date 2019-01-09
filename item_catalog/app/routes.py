@@ -16,7 +16,8 @@ def show_items():
     """
     return render_template(
         'items.html',
-        items=Item.query.all()
+        items=Item.query.all(),
+        categories=Category.query.all()
     )
 
 
@@ -128,3 +129,20 @@ def delete_item(item_id):
     flash('Deleted item: {}'.format(item_name))
 
     return ''
+
+
+
+
+@app.route('/categories/<category_name>/items')
+def category_items(category_name):
+    category = Category\
+        .query\
+        .filter_by(name=category_name)\
+        .first_or_404()
+
+    return render_template(
+        'items.html',
+        items=category.items,
+        category=category,
+        categories=Category.query.all()
+    )

@@ -7,6 +7,7 @@
         {% endif %}
 
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/main.css') }}">
 
         {% block head_hook %}{% endblock %}
@@ -55,15 +56,15 @@
 
         <script>
             function gotoLogIn() {
-                window.location.href = '{{ url_for('login') }}';
+                window.location.href = "{{ url_for('login') }}";
             }
 
             function logOut() {
                 $.post(
-                    '{{ url_for('logout') }}',
+                    "{{ url_for('logout') }}",
                     function(data) {
                         console.log('logout result ' + data);
-                        window.location.replace('{{ url_for('show_items') }}');
+                        window.location.replace("{{ url_for('show_items') }}");
                     }
                 );
             }

@@ -1,0 +1,20 @@
+[
+    {
+        "__type__": "Item",
+        "name": "Hidropondio",
+        "description": "Un aparato para hidratar la pichicha.",
+        "category": "Keyboard"
+    },
+    {
+        "__type__": "Item",
+        "name": "Horocrux",
+        "description": "Un artefacto de Harrry Potter.",
+        "category": "Mice"
+    },
+    {
+        "__type__": "Item",
+        "name": "Cuerno Izquierdo",
+        "description": "El cuerno izquierdo de un demonio.",
+        "category": "Headphones"
+    }
+]

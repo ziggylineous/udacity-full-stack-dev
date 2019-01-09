@@ -1,3 +1,5 @@
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+
 from app import db
 from app.models import User, Category, Item
 from pathlib import Path
@@ -12,38 +14,69 @@ def drop_db():
         print('dropped db')
 
 
-def decode_models(dct):
-    if '__type__' in dct:
-        if dct['__type__'] == 'Category':
-            return Category(name=dct['name'])
+def check_type(type_str, dct):
+    return '__type__' in dct and dct['__type__'] == type_str
 
-        if dct['__type__'] == 'User':
-            user = User(
-                username=dct['username'],
-                email=dct['email']
-            )
-            user.set_password(dct['password'])
-            return user
+
+def user_from_dict(dct):
+    user = User(
+        username=dct['username'],
+        email=dct['email']
+    )
+    user.set_password(dct['password'])
+    return user
 
     return dct
 
 
+def category_from_dict(dct):
+    return Category(name=dct['name'])
+
+
+def item_from_dict(dct):
+    try:
+        category = Category.query.filter_by(name=dct['category']).one()
+
+        return Item(
+            name=dct['name'],
+            description=dct['description'],
+            category=category,
+            category_id=category.id
+        )
+    except NoResultFound | MultipleResultsFound:
+        print("{} category doesn't exist".format(dct['category']))
+        return None
+
+
+
+def make_decode_model(model_name, dict_to_model):
+    def decode_model(dct):
+        if check_type(model_name, dct):
+            return dict_to_model(dct)
+        else:
+            return dct
+
+    return decode_model
+
 
 def load_init_data():
-    initial_models_file = open('data/db_init_data.json', 'r')
-    models_json = json.load(
-        initial_models_file,
-        object_hook=decode_models
-    )
+    model_load_instructions = [
+        ('users', make_decode_model('User', user_from_dict)),
+        ('categories', make_decode_model('Category', category_from_dict)),
+        ('items', make_decode_model('Item', item_from_dict))
+    ]
 
-    for user in models_json['users']:
-        db.session.add(user)
+    for filename, model_decoder in model_load_instructions:
+        path = "data/{}.json".format(filename)
 
-    for cat in models_json['categories']:
-        db.session.add(cat)
+        with open(path, 'r') as f:
+            models_json = json.load(f, object_hook=model_decoder)
 
-    
-    db.session.commit()
+            for model in models_json:
+                if model:
+                    db.session.add(model)
+
+            db.session.commit()
 
 
 if __name__ == '__main__':
