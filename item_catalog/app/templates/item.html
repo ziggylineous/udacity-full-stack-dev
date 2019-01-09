@@ -1,66 +1,81 @@
 {% extends 'simple-layout.html' %}
 
 {% block contents %}
-<h2>{{ item.name }}</h2>
-<h4>{{ item.category.name }}</h4>
+<div id="item-header">
+    <h2>{{ item.name }}</h2>
 
-<p>{{ item.description }}</p>
-<img src="{{ item.image_url }}" alt="{{ item.name }}" >
+    {% if current_user.is_authenticated %}
+    <div id="buttons">
+        <button id="edit" class="icon-btn"><i class="fa fa-edit"></i></button>
+        <button id="delete" class="icon-btn"><i class="fa fa-trash"></i></button>
+    </div>
+    {% endif %}
+</div>
 
-{% if current_user.is_authenticated %}
-<a id="edit" href="{{ url_for('edit_item', item_id=item.id) }}">Edit</a>
-<a id="delete" href="#">Delete</a>
-{% endif %}
+<hr>
+
+<div id="item-body">
+    <img src="{{ item.image_url }}" alt="{{ item.name }}" width="33%">
+    <p>
+        {{ item.description }}
+    </p>
+</div>
+</div>
 
 <!-- delete confirmation dialog (initially hidden) -->
 <div id="deleteConfirmation" title="Delete {{ item.name }}?">
-<p>Are you sure you want to delete {{ item.name }}?</p>
+    <p>Are you sure you want to delete {{ item.name }}?</p>
 </div>
 {% endblock %}
 
 {% block behaviour %}
 <script type="text/javascript">
 
-// Delete Confirmation functions
-function deleteItem() {
-    console.log('sending delete...');
+    // Delete Confirmation functions
+    function deleteItem() {
+        console.log('sending delete...');
 
-    $.ajax({
-        url: "{{ url_for('delete_item', item_id=item.id) }}",
-        method: 'DELETE',
-        // data: '{{ item.id }}',
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log('error deleting item: ' + errorThrown);
-            hideDialog();
-        },
-        success: function(data, textStatus, jqXHR) {
-            window.location.replace("{{ url_for('show_items') }}");
-        }
-    })
-}
+        $.ajax({
+            url: "{{ url_for('delete_item', item_id=item.id) }}",
+            method: 'DELETE',
+            // data: '{{ item.id }}',
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('error deleting item: ' + errorThrown);
+                hideDialog();
+            },
+            success: function (data, textStatus, jqXHR) {
+                window.location.replace("{{ url_for('show_items') }}");
+            }
+        })
+    }
 
-function showDialog() {
-    $('#deleteConfirmation').dialog({
-        buttons: [{
+    function showDialog() {
+        $('#deleteConfirmation').dialog({
+            buttons: [{
                 text: "No",
                 click: hideDialog
             }, {
                 text: "Yes",
                 click: deleteItem
             }
-        ],
-        closeOnEscape: false,
-        modal:true
-    });
-}
+            ],
+            closeOnEscape: false,
+            modal: true
+        });
+    }
 
-function hideDialog() {
-    $('#deleteConfirmation').dialog( "close" );
-}
+    function hideDialog() {
+        $('#deleteConfirmation').dialog("close");
+    }
 
-$('#delete').click(function(event) {
-    event.preventDefault();
-    showDialog();
-})
+    function editItem() {
+        window.location.href = "{{ url_for('edit_item', item_id=item.id) }}";
+    }
+
+    $('#delete').click(function (event) {
+        showDialog();
+    })
+
+    $('#edit').click(editItem);
 </script>
 {% endblock %}

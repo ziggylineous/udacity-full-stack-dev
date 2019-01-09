@@ -18,8 +18,8 @@ body {
     line-height: 2em;
 }
 
-
 /* log-in-out button */
+
 button#log-in-out {
     color: white;
     background-color: orangered;
@@ -40,19 +40,20 @@ button#log-in-out:active {
     background-color: rgb(225, 50, 0);
     color: darkblue;
 }
+
 /* top bar end */
 
-
-
-
 /* main content */
+
 #contents {
     background-color: #EEE;
-    width: 75%;
+    width: 67%;
     margin: 2em auto;
     border-radius: 1em;
     min-height: 50em;
+    padding: 2em;
     border: 1px solid #999;
+    box-sizing: border-box;
 }
 
 #contents.categories-layout {
@@ -60,13 +61,13 @@ button#log-in-out:active {
 }
 
 .align-main-left {
-    margin-left: 12.5%;
-    /* (100 - 75 = 25) / 2 */
+    margin-left: 16.5%;
+    /* (100 - 67 = 33) / 2 */
 }
 
 .align-main-right {
-    margin-right: 12.5%;
-    /* 25 / 2 */
+    margin-right: 16.5%;
+    /* 33 / 2 */
 }
 
 h2 {
@@ -76,10 +77,8 @@ h2 {
     margin: 0 0 .33em 0;
 }
 
-
-
-
 /* categories ~ items layout */
+
 nav#categories {
     flex: 1;
     padding: 2em 2em;
@@ -134,10 +133,8 @@ main#items {
     font-style: italic;
 }
 
-
-
-
 /* footer styles */
+
 footer {
     color: darkblue;
     text-align: center;
@@ -147,4 +144,72 @@ footer {
 
 #deleteConfirmation {
     display: none;
+}
+
+/* item page */
+
+/* header */
+
+#item-header {
+    display: flex;
+    margin-bottom: 1em;
+    align-items: center;
+}
+
+#item-header h2 {
+    margin-bottom: 0;
+}
+
+#item-header #buttons {
+    margin-left: auto;
+}
+
+/* icon buttons */
+
+.icon-btn {
+    background-color: white;
+    color: orangered;
+    border: 1px solid orangered;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0 0.25em;
+    width: 2em;
+    height: 2em;
+    border-radius: 0.25em;
+    margin-left: 0.25em;
+}
+
+.icon-btn:hover {
+    background-color: white;
+    color: darkblue;
+    border-color: darkblue;
+}
+
+.icon-btn:active {
+    background-color: orange;
+    color: darkblue;
+    border-color: darkblue;
+}
+
+/* item body */
+
+#item-body {
+    margin-top: 1.5em;
+}
+
+#item-body p {
+    margin: 0;
+    font-size: 1.75em;
+    line-height: 1.5em;
+}
+
+#item-body img {
+    float: right;
+}
+
+hr {
+    margin: 0;
+    background-color: darkblue;
+    height: 2px;
+    border: none;
 }
