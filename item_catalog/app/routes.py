@@ -1,8 +1,9 @@
 # the first app is the package,
 # the second is the Flask application
 from app import app, db, images
-from app.models import User, Item, Category
-from flask import render_template, request, flash, url_for, redirect
+from app.item_search import search_item as search_item_in_index
+from app.models import Item, Category
+from flask import render_template, request, flash, url_for, redirect, jsonify
 from app.forms import ItemForm
 from flask_login import login_required
 
@@ -57,6 +58,7 @@ def edit_item(item_id):
 def update_item(item, item_form, filename):
     """
     Update an item with form data.
+
     :param item: the item to update
     :param item_form: the item's form
     :param filename: the item's image name
@@ -105,7 +107,15 @@ def _create_item(item_form, filename):
     return item
 
 
-def save_image_get_filename(image_file):    
+def save_image_get_filename(image_file):
+    """
+    If the user attached an image, save it
+    and return its url. Otherwise return an empty str
+    meaning the item has no image.
+
+    :param image_file: An image file of the item
+    :return: the image url to save in the Item table
+    """
     if image_file:
         filename = images.save(
             image_file,
@@ -135,6 +145,12 @@ def delete_item(item_id):
 
 @app.route('/categories/<category_name>/items')
 def category_items(category_name):
+    """
+    Creates the page for a selected category
+
+    :param category_name: The selected category name
+    :return: Category page response
+    """
     category = Category\
         .query\
         .filter_by(name=category_name)\
@@ -146,3 +162,25 @@ def category_items(category_name):
         category=category,
         categories=Category.query.all()
     )
+
+
+# api requirement
+@app.route('/api/item')
+def search_item():
+    query_args = request.args.getlist('q')
+
+    if len(query_args) == 0:
+        error_message = """
+        No 'q' query args sent.
+        Usage: send several search words separated by commas, like this:
+        /api/item?q=word1,word2,word3
+        """
+        response = jsonify(error=error_message)
+        response.status_code = 400
+        return response
+
+    joined_words = query_args[0]
+    words = joined_words.split(',')
+    items = search_item_in_index(words)
+
+    return jsonify([item.as_dict() for item in items])

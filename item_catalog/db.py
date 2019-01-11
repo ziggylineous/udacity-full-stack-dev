@@ -1,8 +1,13 @@
+import os
+
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from app import db
 from app.models import User, Category, Item
 from pathlib import Path
+import shutil
+from whoosh.fields import TEXT, ID, STORED, Schema
+from whoosh.index import create_in
 import json
 
 def drop_db():
@@ -48,7 +53,6 @@ def item_from_dict(dct):
         return None
 
 
-
 def make_decode_model(model_name, dict_to_model):
     def decode_model(dct):
         if check_type(model_name, dct):
@@ -79,7 +83,34 @@ def load_init_data():
             db.session.commit()
 
 
+def init_whoosh():
+    if os.path.exists('index'):
+        shutil.rmtree('index')
+
+    os.mkdir('index')
+
+    schema = Schema(id=ID(stored=True, unique=True), name=TEXT)
+    ix = create_in('index', schema=schema)
+
+    return ix
+
+
+def index_items(ix):
+    items = Item.query.all()
+    writer = ix.writer()
+
+    for item in items:
+        writer.add_document(
+            id=str(item.id), name=item.name
+        )
+
+    writer.commit()
+
+
 if __name__ == '__main__':
     drop_db()
     db.create_all()
     load_init_data()
+
+    ix = init_whoosh()
+    index_items(ix)

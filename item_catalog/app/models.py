@@ -65,6 +65,14 @@ class Item(db.Model):
         filename = self.image if self.image else 'item_placeholder.png'
         return images.url(filename)
 
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'image': self.image_url
+        }
+
 
 class Category(db.Model):
     __tablename__ = 'categories'

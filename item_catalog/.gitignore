@@ -8,3 +8,4 @@ images/*.xcf
 !images/item_placeholder.png
 .idea/
 .DS_Store
+index
