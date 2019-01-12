@@ -8,9 +8,11 @@ The main features are:
 - item CRUD
 - user authorization and authentication. Some features are available only
 for logged in users
+- user authentication with google's oauth api
 - Item image uploading (saved in the servers filesystem)
 - An API endpoint to search items. This was implemented with
 a python's whoosh index (so you do not have to install anything) 
+
 
 ## Setup
 1. Install sqlite3.
@@ -28,5 +30,18 @@ You can install all running  `pip install -r requirements.txt`.
 4. Standing at item_catalog, run `python db.py` to create the database and load some starting models.
    This also creates the whoosh index for searching items.
 
+
 ## Running
 In the terminal, navigate to item_catalog directory and run: `flask run`
+
+   
+## Authentication
+The `python db.py` step also creates 2 users, that you can use to login:
+   - username: Pepe, password: 12345
+   - Super, 54321
+
+Besides, you can authenticate with a google account
+
+
+## search API
+
