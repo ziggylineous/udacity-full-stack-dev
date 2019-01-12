@@ -5,6 +5,10 @@ body {
     margin: 0;
 }
 
+
+
+
+/* header */
 #header {
     background-color: darkblue;
     color: white;
@@ -18,8 +22,10 @@ body {
     line-height: 2em;
 }
 
-/* log-in-out button */
 
+
+
+/* log-in-out button */
 button#log-in-out {
     color: white;
     background-color: orangered;
@@ -40,12 +46,13 @@ button#log-in-out:active {
     background-color: rgb(225, 50, 0);
     color: darkblue;
 }
-
 /* top bar end */
 
-/* main content */
 
-#contents {
+
+
+/* main content */
+.contents {
     background-color: #EEE;
     width: 67%;
     margin: 2em auto;
@@ -56,7 +63,7 @@ button#log-in-out:active {
     box-sizing: border-box;
 }
 
-#contents.categories-layout {
+.contents.categories-layout {
     display: flex;
 }
 
@@ -77,8 +84,11 @@ h2 {
     margin: 0 0 .33em 0;
 }
 
-/* categories ~ items layout */
 
+
+
+
+/* categories ~ items layout */
 nav#categories {
     flex: 1;
     padding: 2em 2em;
@@ -133,8 +143,10 @@ main#items {
     font-style: italic;
 }
 
-/* footer styles */
 
+
+
+/* footer */
 footer {
     color: darkblue;
     text-align: center;
@@ -146,10 +158,11 @@ footer {
     display: none;
 }
 
+
+
+
 /* item page */
-
-/* header */
-
+/* item header */
 #item-header {
     display: flex;
     margin-bottom: 1em;
@@ -165,7 +178,6 @@ footer {
 }
 
 /* icon buttons */
-
 .icon-btn {
     background-color: white;
     color: orangered;
@@ -192,7 +204,6 @@ footer {
 }
 
 /* item body */
-
 #item-body {
     margin-top: 1.5em;
 }
@@ -212,4 +223,78 @@ hr {
     background-color: darkblue;
     height: 2px;
     border: none;
+}
+
+
+
+
+/* form */
+#login-contents {
+    width: 33%;
+    min-height: 44em;
+}
+
+.form-group {
+    margin-bottom: 1.25em;
+}
+
+#login-contents form {
+    margin-top: 1.75em;
+}
+
+label {
+    display: block;
+    font-size: 1.75em;
+    color: darkblue;
+}
+
+input[type=text],
+input[type=password] {
+    border: 1px solid orangered;
+    font-size: 1.75em;
+    padding: 0.25em;
+    width:100%;
+    color: darkblue;
+    box-sizing: border-box;
+    border-radius: 0.25em;
+    font-weight: bold;
+}
+
+form input[type=submit] {
+    width: 100%;
+    font-size: 1.75em;
+}
+
+form div.form-group-no-label {
+    margin-top: 3.25em;
+}
+
+form input[type=submit] {
+    background-color: white;
+    color: darkblue;
+    border: 1px solid darkblue;
+    border-radius: 0.25em;
+    padding: 0.25em;
+
+    font-size:1.75em;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+form input[type=submit]:hover {
+    background-color: orange;
+}
+
+form input[type=submit]:active {
+    background-color: orangered;
+}
+
+#login-contents hr {
+    margin: 3.25em 0;
+}
+
+#third-party-auth {
+    display: flex;
+    justify-content: space-between;
 }
