@@ -36,6 +36,7 @@ button#log-in-out {
     margin-left: auto;
     border: 5px solid orange;
     border-radius: 0.375em;
+    cursor: pointer;
 }
 
 button#log-in-out:hover {
@@ -45,6 +46,7 @@ button#log-in-out:hover {
 button#log-in-out:active {
     background-color: rgb(225, 50, 0);
     color: darkblue;
+    outline: none;
 }
 /* top bar end */
 
@@ -91,13 +93,13 @@ h2 {
 /* categories ~ items layout */
 nav#categories {
     flex: 1;
-    padding: 2em 2em;
+    padding-right: 2em;
     border-right: 1px solid #CCC;
 }
 
 main#items {
     flex: 3;
-    padding: 2em 2em;
+    padding-left: 2em;
 }
 
 #categories ul,
@@ -116,13 +118,10 @@ main#items {
 }
 
 #categories ul a:link,
-#items ul a:link {
-    color: orangered;
-}
-
+#items ul a:link,
 #categories ul a:visited,
 #items ul a:visited {
-    color: brown;
+    color: orangered;
 }
 
 #categories ul a:hover,
@@ -141,6 +140,10 @@ main#items {
 #items ul span.item-category {
     color: #999;
     font-style: italic;
+}
+
+#items li#new-item a i {
+    color:darkblue;
 }
 
 
@@ -229,6 +232,7 @@ hr {
 
 
 /* form */
+/* login */
 #login-contents {
     width: 33%;
     min-height: 44em;
@@ -249,20 +253,29 @@ label {
 }
 
 input[type=text],
-input[type=password] {
+input[type=password],
+input[type=submit],
+textarea {
     border: 1px solid orangered;
     font-size: 1.75em;
+    border: 1px solid orangered;
     padding: 0.25em;
-    width:100%;
     color: darkblue;
     box-sizing: border-box;
     border-radius: 0.25em;
-    font-weight: bold;
+    outline: none;
 }
 
-form input[type=submit] {
-    width: 100%;
-    font-size: 1.75em;
+input[type=text]:focus,
+input[type=password]:focus,
+textarea:focus {
+    border: 1px solid darkblue;
+}
+
+
+input[type=text],
+input[type=password] {
+    width:100%;
 }
 
 form div.form-group-no-label {
@@ -270,13 +283,11 @@ form div.form-group-no-label {
 }
 
 form input[type=submit] {
-    background-color: white;
+    width: 100%;
     color: darkblue;
-    border: 1px solid darkblue;
-    border-radius: 0.25em;
-    padding: 0.25em;
 
-    font-size:1.75em;
+    background-color: white;
+    border: 1px solid darkblue;
     font-weight: bold;
 
     cursor: pointer;
@@ -298,3 +309,36 @@ form input[type=submit]:active {
     display: flex;
     justify-content: space-between;
 }
+
+textarea {
+    border-radius: 0.5em;
+    resize: none;
+    width: 100%;
+}
+
+
+/* item-form */
+.flexed {
+    display: flex;
+}
+
+/* two col layout */
+#item-form div.flexed > div:first-child {
+    width: 60%;
+}
+
+#item-form div.flexed > div:last-child {
+    margin-left: auto;
+    width: 35%;
+}
+
+#item-form input[type=text] {
+    width: 100%;
+}
+
+/* make the item image occupy its own line*/
+#item-form img {
+    display: block;
+
+}
+
