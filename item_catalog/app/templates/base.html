@@ -40,7 +40,7 @@
 
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <div class="flash">
+        <div id="flash" class="centered-panel">
             <ul>
                 {% for message in messages %}
                 <li>{{ message }}</li>
@@ -55,6 +55,7 @@
         <footer>Udacity Full Stack Nanodegree - Item Catalog</footer>
 
         <script>
+            // log in out button handler
             function gotoLogIn() {
                 window.location.href = "{{ url_for('login') }}";
             }
@@ -76,6 +77,23 @@
                 logOut
                 {% endif %}
             );
+            // end log in out button handler
+
+            // flash messages hiding
+            let flashContainer = $('#flash');
+            if (flashContainer.length > 0) {
+                let flashMessages = $('#flash ul li');
+                let startHidingDelay = Math.min(6000, flashMessages.length * 5000);
+
+                const hideFlashContainer = function() {
+                    flashContainer.fadeOut(
+                        1000,
+                        () => flashContainer.remove()
+                    )
+                };
+
+                setTimeout(hideFlashContainer, startHidingDelay);
+            }
         </script>
         {% block behaviour %}
         {% endblock %}

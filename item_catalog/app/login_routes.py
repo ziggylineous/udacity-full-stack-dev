@@ -29,6 +29,7 @@ def login():
 
         if user and user.check_password(form.password.data):
             login_user(user)
+            flash("You logged in as {}".format(user.username))
             return redirect(url_for('show_items'))
         else:
             flash('Invalid username or password')
