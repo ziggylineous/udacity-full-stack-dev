@@ -44,4 +44,22 @@ Besides, you can authenticate with a google account
 
 
 ## search API
+The api endpoint searches an item given several terms. The path is:
 
+`/api/item`
+
+it takes one query param `q`, which stands for the search terms
+for the item you want to find. Each of these words has to be separated by a comma.
+For example:
+
+```
+/api/item?q=word1,word2,word3
+```
+
+The words sent don't need to be an exact match of the item name.
+They can be a part of it.
+
+#### Implementation
+This search is implemented with `whoosh`, which is a content search library
+that is fully implemented in python. It creates a index with a schema where you
+specify which fields should be searchable.  

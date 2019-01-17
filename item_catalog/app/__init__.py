@@ -26,4 +26,4 @@ patch_request_class(app, 4 * 1024 * 1024)  # limits image's size
 
 # here app is the package
 # not the above app var
-from app import login_routes, routes, models, item_search
+from app import models, login_routes, routes, api

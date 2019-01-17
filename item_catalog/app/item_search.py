@@ -7,7 +7,6 @@ from whoosh.index import open_dir
 
 # this was taken from miguel grinberg's flask mega tutorial
 def save_item_changes(session):
-    print('save_item_changes')
     session._changes = {
         'add': [obj for obj in session.new if isinstance(obj, Item)],
         'update': [obj for obj in session.dirty if isinstance(obj, Item)],
@@ -16,8 +15,10 @@ def save_item_changes(session):
 
 
 def save_items_in_index(session):
-    writer = ix.writer()
-    with ix.searcher() as searcher:
+    index = get_index()
+    writer = index.writer()
+
+    with index.searcher() as searcher:
 
         for obj in session._changes['add']:
             writer.add_document(name=obj.name, id=str(obj.id))
@@ -41,13 +42,14 @@ def save_items_in_index(session):
 
 
 def search_item(words):
-    parser = QueryParser("name", schema=ix.schema)
+    index = get_index()
+    parser = QueryParser("name", schema=index.schema)
 
     wildcard_words = ['*' + word + '*' for word in words]
     query_str = " OR ".join(wildcard_words)
     query = parser.parse(query_str)
 
-    with ix.searcher() as searcher:
+    with index.searcher() as searcher:
         results = searcher.search(query)
 
         # pair ids with db objects
@@ -63,15 +65,23 @@ def search_item(words):
     return []
 
 
-print("initializing index")
+_ix = None
 
-if os.path.exists('index'):
-    ix = open_dir('index')
-else:
-    ix = None
 
-event.listen(db.session, 'before_commit', save_item_changes)
-event.listen(db.session, 'after_commit', save_items_in_index)
+def get_index():
+    global _ix
 
-print("index ready")
+    if _ix:
+        return _ix
 
+    if os.path.exists('index'):
+        print('initializing index')
+        _ix = open_dir('index')
+
+        event.listen(db.session, 'before_commit', save_item_changes)
+        event.listen(db.session, 'after_commit', save_items_in_index)
+        print("index ready")
+
+        return _ix
+    else:
+        return None

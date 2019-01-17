@@ -1,9 +1,8 @@
 # the first app is the package,
 # the second is the Flask application
 from app import app, db, images
-from app.item_search import search_item as search_item_in_index
 from app.models import Item, Category
-from flask import render_template, request, flash, url_for, redirect, jsonify
+from flask import render_template, request, flash, url_for, redirect
 from app.forms import ItemForm
 from flask_login import login_required
 
@@ -162,25 +161,3 @@ def category_items(category_name):
         category=category,
         categories=Category.query.all()
     )
-
-
-# api requirement
-@app.route('/api/item')
-def search_item():
-    query_args = request.args.getlist('q')
-
-    if len(query_args) == 0:
-        error_message = """
-        No 'q' query args sent.
-        Usage: send several search words separated by commas, like this:
-        /api/item?q=word1,word2,word3
-        """
-        response = jsonify(error=error_message)
-        response.status_code = 400
-        return response
-
-    joined_words = query_args[0]
-    words = joined_words.split(',')
-    items = search_item_in_index(words)
-
-    return jsonify([item.as_dict() for item in items])
