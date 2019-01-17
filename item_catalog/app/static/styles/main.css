@@ -28,6 +28,12 @@ body {
     color: white;
 }
 
+#header h1 a:hover {
+    outline: none;
+    text-decoration: none;
+    color: orangered;
+}
+
 
 
 
@@ -300,6 +306,7 @@ label {
 input[type=text],
 input[type=password],
 input[type=submit],
+form button.cancel,
 textarea {
     border: 1px solid orangered;
     font-size: 1.75em;
@@ -327,7 +334,8 @@ form div.form-group-no-label {
     margin-top: 3.25em;
 }
 
-form input[type=submit] {
+form input[type=submit],
+form button.cancel {
     width: 100%;
     color: darkblue;
 
@@ -338,11 +346,13 @@ form input[type=submit] {
     cursor: pointer;
 }
 
-form input[type=submit]:hover {
+form input[type=submit]:hover,
+form button.cancel:hover {
     background-color: orange;
 }
 
-form input[type=submit]:active {
+form input[type=submit]:active,
+form button.cancel:active {
     background-color: orangered;
 }
 
@@ -380,10 +390,11 @@ textarea {
 }
 
 #item-form input[type=submit] {
-    width: 60%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1em;
+    width: 40%;
+}
+
+#item-form button.cancel {
+    width: 20%;
 }
 
 /* make the item image occupy its own line*/
