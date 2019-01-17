@@ -16,7 +16,7 @@ a python's whoosh index (so you do not have to install anything)
 
 ## Setup
 1. Install sqlite3.
-2. Create a python 3 environment and install with pip:
+2. Create a [python 3 environment](https://docs.python-guide.org/dev/virtualenvs/), activate that environment and install with pip:
     - flask
     - flask-sqlalchemy (simplifies queries, creates a scoped_session)
     - flask-wtf (form validation)
@@ -24,15 +24,21 @@ a python's whoosh index (so you do not have to install anything)
     - oauth2client
     - requests
     - whoosh (full text search in the api requirement)
-    
 You can install all running  `pip install -r requirements.txt`.
-3. Set the `FLASK_APP` environment variable to `item_catalog.py`
+3. Set the `FLASK_APP` environment variable to `item_catalog.py`.
+   In Linux or MacOS you can do this with `export FLASK_APP=item_catalog.py`.
 4. Standing at item_catalog, run `python db.py` to create the database and load some starting models.
    This also creates the whoosh index for searching items.
 
 
 ## Running
-In the terminal, navigate to item_catalog directory and run: `flask run`
+In the terminal, navigate to item_catalog directory and run: `flask run`.
+If you need it to run in a particular port type `flask run --port <PORT_NUMBER>`. In Vagrant you may need to run it on the 0.0.0.0 address to access from the host computer: to achieve this, add `--host 0.0.0.0` to the previous command.
+
+
+(In the virtual machine of the FSND, you have also to export:
+- export LC_ALL=C.UTF-8
+- export LANG=C.UTF-8)
 
    
 ## Authentication
