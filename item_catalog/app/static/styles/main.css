@@ -22,6 +22,12 @@ body {
     line-height: 2em;
 }
 
+#header h1 a {
+    outline: none;
+    text-decoration: none;
+    color: white;
+}
+
 
 
 
@@ -67,7 +73,6 @@ button#log-in-out:active {
     margin-top: 1em;
     margin-bottom: 1em;
     border-radius: 1em;
-    min-height: 50em;
     padding: 2em;
 }
 
@@ -122,6 +127,9 @@ h2 {
 
 
 /* categories ~ items layout */
+.categories-layout {
+    min-height: 50em;
+}
 nav#categories {
     flex: 1;
     padding-right: 2em;
@@ -259,6 +267,12 @@ hr {
     border: none;
 }
 
+.clear:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+
 
 
 
@@ -353,6 +367,8 @@ textarea {
     display: flex;
 }
 
+
+
 /* two col layout */
 #item-form div.flexed > div:first-child {
     width: 60%;
@@ -363,13 +379,14 @@ textarea {
     width: 35%;
 }
 
-#item-form input[type=text] {
-    width: 100%;
+#item-form input[type=submit] {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
 }
 
 /* make the item image occupy its own line*/
 #item-form img {
     display: block;
-
 }
-

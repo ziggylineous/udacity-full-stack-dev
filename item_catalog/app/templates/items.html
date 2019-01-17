@@ -14,7 +14,13 @@
 </nav>
 
 <main id="items">
-    <h2>Items</h2>
+§    <h2>
+        {% if category %}
+        {{ category.name }} Items
+        {% else %}
+        All Items
+        {% endif %}
+    </h2>
 
     <ul>
         {% for item in items %}

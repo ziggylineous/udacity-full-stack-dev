@@ -27,7 +27,11 @@
 
     <body>
         <div id="header">
-            <h1 class="align-main-left">Item Catalog</h1>
+            <h1 class="align-main-left">
+            <a href="{{ url_for('show_items') }}">
+                Item Catalog
+            </a>
+            </h1>
             <!--<a href="{{ url_for('show_items') }}">Home</a>-->
             <button class="align-main-right" id="log-in-out">
                 {% if current_user.is_anonymous %}
