@@ -1,4 +1,5 @@
-from flask import render_template, request, session, jsonify, flash, redirect, url_for
+from flask import render_template, session, flash, url_for
+from flask import request, jsonify, redirect
 from flask_login import current_user, login_user, logout_user
 import requests
 from app import app, CLIENT_ID, login
@@ -34,7 +35,6 @@ def login():
         else:
             flash('Invalid username or password')
             return redirect(url_for('login'))
-
 
     session['state'] = generate_session_token()
 
@@ -87,14 +87,19 @@ def exchange_auth_code(auth_code):
     return oauth_flow.step2_exchange(auth_code)
 
 
-def check_credentials_with_oauth(credentials_access_token, credentials_gplus_id):
+def check_credentials_with_oauth(
+        credentials_access_token,
+        credentials_gplus_id):
     """
     Get oauth info with access token
     and compare it with credentials values
-    :param credentials:
+    :param credentials_access_token: the access token from the credentials
+    obtained from google
+    :param credentials_gplus_id: the google id from credentials
+    obtained from google
     :return:
     """
-    oauth_url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token={}'.format(credentials_access_token)
+    oauth_url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + credentials_access_token
     oauth_req = requests.get(oauth_url)
     oauth_json = oauth_req.json()
 
@@ -108,7 +113,7 @@ def check_credentials_with_oauth(credentials_access_token, credentials_gplus_id)
     oauth_user_id = oauth_json['user_id']
 
     if oauth_user_id != credentials_gplus_id:
-        error_message = 'Token\'s user ID({}) doesn\'t match given user ID.({})'.format(
+        error_message = "Token's user ID({}) doesn't match given user ID.({})".format(
             oauth_user_id,
             credentials_gplus_id
         )
@@ -116,7 +121,10 @@ def check_credentials_with_oauth(credentials_access_token, credentials_gplus_id)
 
     # check client id
     if oauth_json['issued_to'] != CLIENT_ID:
-        error_message = 'Token\'s client ID does not match app\'s.{} vs {}'.format(oauth_json['issued_to'], CLIENT_ID)
+        error_message = "Token's client ID does not match app's.{} vs {}".format(
+            oauth_json['issued_to'],
+            CLIENT_ID
+        )
         return False, json_response(error_message, 401)
 
     return True, None
@@ -134,9 +142,10 @@ def fetch_google_userinfo(access_token):
     answer = requests.get(
         USER_INFO_URL,
         params={
-        'access_token': access_token,
-        'alt': 'json'
-    })
+            'access_token': access_token,
+            'alt': 'json'
+        }
+    )
 
     return answer.json()
 

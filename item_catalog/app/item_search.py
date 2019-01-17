@@ -5,6 +5,7 @@ from whoosh.qparser import QueryParser
 import os
 from whoosh.index import open_dir
 
+
 # this was taken from miguel grinberg's flask mega tutorial
 def save_item_changes(session):
     session._changes = {

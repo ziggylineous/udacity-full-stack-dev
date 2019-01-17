@@ -10,6 +10,7 @@ from whoosh.fields import TEXT, ID, STORED, Schema
 from whoosh.index import create_in
 import json
 
+
 def drop_db():
     path = Path('item_catalog.db')
 

@@ -3,7 +3,8 @@ from flask_login import LoginManager
 
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
-from flask_uploads import UploadSet, IMAGES, configure_uploads, patch_request_class
+from flask_uploads import UploadSet, IMAGES
+from flask_uploads import configure_uploads, patch_request_class
 import json
 
 

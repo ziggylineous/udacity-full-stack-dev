@@ -40,13 +40,13 @@ def view_item(item_id):
 def edit_item(item_id):
     item = Item.query.get_or_404(item_id)
     form = ItemForm(formdata=request.form, obj=item)
-    
+
     if form.validate_on_submit():
         filename = save_image_get_filename(form.image.data)
         update_item(item, form, filename)
         flash('Updated item: {}'.format(item.name))
         return redirect(url_for('view_item', item_id=item.id))
-    
+
     return render_template(
         'item-form.html',
         form=form,
@@ -73,7 +73,7 @@ def update_item(item, item_form, filename):
 @login_required
 def create_item():
     form = ItemForm()
-    
+
     if form.validate_on_submit():
         filename = save_image_get_filename(form.image.data)
         item = _create_item(form, filename)
@@ -91,7 +91,7 @@ def create_item():
 def _create_item(item_form, filename):
     category_id = item_form.category_id.data
     cat = Category.query.filter_by(id=category_id).one()
-    
+
     item = Item(
         name=item_form.name.data,
         description=item_form.description.data,
@@ -99,7 +99,7 @@ def _create_item(item_form, filename):
         category=cat,
         image=filename
     )
-        
+
     db.session.add(item)
     db.session.commit()
 
@@ -120,9 +120,9 @@ def save_image_get_filename(image_file):
             image_file,
             name=image_file.filename
         )
-        
+
         return filename
-    
+
     return ''
 
 
@@ -138,8 +138,6 @@ def delete_item(item_id):
     flash('Deleted item: {}'.format(item_name))
 
     return ''
-
-
 
 
 @app.route('/categories/<category_name>/items')
