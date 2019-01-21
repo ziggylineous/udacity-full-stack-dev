@@ -42,12 +42,12 @@
             </button>
         </div>
 
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div id="flash" class="centered-panel">
             <ul>
-                {% for message in messages %}
-                <li>{{ message }}</li>
+                {% for msg_category, message in messages %}
+                <li class="{{msg_category}}">{{ message }}</li>
                 {% endfor %}
             </ul>
         </div>

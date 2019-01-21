@@ -101,7 +101,10 @@ def authorized_item_operation(item_operation):
         item = Item.query.get_or_404(item_id)
 
         if not current_user.owns(item):
-            flash("You cannot edit nor delete item {}".format(item.name))
+            flash(
+                "You cannot edit nor delete item {}".format(item.name),
+                'error'    
+            )
             return redirect(url_for('view_item', item_id=item.id))
         
         return item_operation(item)

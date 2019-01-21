@@ -116,6 +116,12 @@ h2 {
 
 #flash ul li {
     font-size: 1.5em;
+    color: darkblue;
+}
+
+#flash ul li.error {
+    font-weight: bold;
+    color: orangered;
 }
 
 #flash ul {
@@ -123,7 +129,6 @@ h2 {
     list-style-position: inside;
     margin: 0;
     padding: 1em 1em 1em 2em;
-    color: darkblue;
 }
 
 #flash ul li:not(:last-child) {
