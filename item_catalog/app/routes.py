@@ -101,7 +101,7 @@ def authorized_item_operation(item_operation):
     def deco(item_id):
         item = Item.query.get_or_404(item_id)
 
-        if not current_user.owns(item):
+        if current_user.is_anonymous or not current_user.owns(item):
             flash(
                 "You cannot edit nor delete item {}".format(item.name),
                 'error'
