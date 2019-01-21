@@ -216,8 +216,9 @@ def gdisconnect():
     access_token = session.get('access_token')
 
     if access_token:
+        user = User.query.get(session['user_id'])
         print('gdisconnect(): access token is {}'.format(access_token))
-        print('User name: {}'.format(session['user'].name))
+        print('User name: {}'.format(user.username))
 
         disconnect_response = requests.post(
             'https://accounts.google.com/o/oauth2/revoke',
