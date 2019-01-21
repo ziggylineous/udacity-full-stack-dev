@@ -100,7 +100,8 @@ def check_credentials_with_oauth(
     obtained from google
     :return:
     """
-    oauth_url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + credentials_access_token
+    oauth_url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='\
+                + credentials_access_token
     oauth_req = requests.get(oauth_url)
     oauth_json = oauth_req.json()
 
@@ -114,7 +115,8 @@ def check_credentials_with_oauth(
     oauth_user_id = oauth_json['user_id']
 
     if oauth_user_id != credentials_gplus_id:
-        error_message = "Token's user ID({}) doesn't match given user ID.({})".format(
+        error_message = "Token's user ID({}) doesn't match given user ID.({})"
+        error_message = error_message.format(
             oauth_user_id,
             credentials_gplus_id
         )
@@ -122,7 +124,8 @@ def check_credentials_with_oauth(
 
     # check client id
     if oauth_json['issued_to'] != CLIENT_ID:
-        error_message = "Token's client ID does not match app's.{} vs {}".format(
+        error_message = "Got different client id in oauth request: {} vs {}"
+        error_message = error_message.format(
             oauth_json['issued_to'],
             CLIENT_ID
         )

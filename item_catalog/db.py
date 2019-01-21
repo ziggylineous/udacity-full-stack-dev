@@ -30,7 +30,7 @@ def user_from_dict(dct):
         email=dct['email']
     )
     user.set_password(dct['password'])
-    
+
     return user
 
 
@@ -45,12 +45,12 @@ def item_from_dict(dct):
     except NoResultFound | MultipleResultsFound:
         print("{} category doesn't exist".format(dct['category']))
         return None
-    
+
     user = User.from_email(dct['user_email'])
 
-    if not user:    
+    if not user:
         return None
-    
+
     return Item(
         name=dct['name'],
         description=dct['description'],
@@ -58,7 +58,7 @@ def item_from_dict(dct):
         category_id=category.id,
         user_id=user.id
     )
-    
+
 
 def make_decode_model(model_name, dict_to_model):
     def decode_model(dct):

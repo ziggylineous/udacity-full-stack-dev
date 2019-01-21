@@ -19,7 +19,7 @@ class User(UserMixin, db.Model):
 
     def check_password(self, plaintext_pw):
         return check_password_hash(self.password_hash, plaintext_pw)
-    
+
     def owns(self, item):
         return item in self.items
 

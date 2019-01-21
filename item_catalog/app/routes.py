@@ -7,6 +7,7 @@ from app.forms import ItemForm
 from flask_login import login_required, current_user
 from functools import wraps
 
+
 # item CRUD routes
 @app.route('/')
 @app.route('/items')
@@ -103,14 +104,13 @@ def authorized_item_operation(item_operation):
         if not current_user.owns(item):
             flash(
                 "You cannot edit nor delete item {}".format(item.name),
-                'error'    
+                'error'
             )
             return redirect(url_for('view_item', item_id=item.id))
-        
-        return item_operation(item)
-    
-    return deco
 
+        return item_operation(item)
+
+    return deco
 
 
 @app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
