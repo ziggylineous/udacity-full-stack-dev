@@ -2,10 +2,10 @@
 # the second is the Flask application
 from app import app, db, images
 from app.models import Item, Category
-from flask import render_template, request, flash, url_for, redirect
+from flask import render_template, request, flash, url_for, redirect, abort
 from app.forms import ItemForm
-from flask_login import login_required
-
+from flask_login import login_required, current_user
+from functools import wraps
 
 # item CRUD routes
 @app.route('/')
@@ -33,40 +33,6 @@ def view_item(item_id):
         title='Item Catalog: {}'.format(item.name),
         item=item
     )
-
-
-@app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
-@login_required
-def edit_item(item_id):
-    item = Item.query.get_or_404(item_id)
-    form = ItemForm(formdata=request.form, obj=item)
-
-    if form.validate_on_submit():
-        filename = save_image_get_filename(form.image.data)
-        update_item(item, form, filename)
-        flash('Updated item: {}'.format(item.name))
-        return redirect(url_for('view_item', item_id=item.id))
-
-    return render_template(
-        'item-form.html',
-        form=form,
-        item_action='Edit'
-    )
-
-
-def update_item(item, item_form, filename):
-    """
-    Update an item with form data.
-
-    :param item: the item to update
-    :param item_form: the item's form
-    :param filename: the item's image name
-    """
-    item_form.populate_obj(item)
-    item.category = Category.query.filter_by(id=item.category_id).one()
-    item.image = filename
-
-    db.session.commit()
 
 
 @app.route('/items/new', methods=['GET', 'POST'])
@@ -97,8 +63,11 @@ def _create_item(item_form, filename):
         description=item_form.description.data,
         category_id=category_id,
         category=cat,
+        user_id=current_user.id,
         image=filename
     )
+
+    # no need to add item to user's items. SqlAlchemy does this
 
     db.session.add(item)
     db.session.commit()
@@ -126,16 +95,63 @@ def save_image_get_filename(image_file):
     return ''
 
 
-@app.route('/items/<int:item_id>/delete', methods=['DELETE'])
-@login_required
-def delete_item(item_id):
-    item = Item.query.get_or_404(item_id)
-    item_name = item.name
+def authorized_item_operation(item_operation):
+    @wraps(item_operation)
+    def deco(item_id):
+        item = Item.query.get_or_404(item_id)
 
+        if not current_user.owns(item):
+            flash("You cannot edit nor delete item {}".format(item.name))
+            return redirect(url_for('view_item', item_id=item.id))
+        
+        return item_operation(item)
+    
+    return deco
+
+
+
+@app.route('/items/<int:item_id>/edit', methods=['GET', 'POST'])
+@authorized_item_operation
+@login_required
+def edit_item(item):
+    form = ItemForm(formdata=request.form, obj=item)
+
+    if form.validate_on_submit():
+        filename = save_image_get_filename(form.image.data)
+        update_item(item, form, filename)
+        flash('Updated item: {}'.format(item.name))
+        return redirect(url_for('view_item', item_id=item.id))
+
+    return render_template(
+        'item-form.html',
+        form=form,
+        item_action='Edit'
+    )
+
+
+def update_item(item, item_form, filename):
+    """
+    Update an item with form data.
+
+    :param item: the item to update
+    :param item_form: the item's form
+    :param filename: the item's image name
+    """
+    item_form.populate_obj(item)
+    item.category = Category.query.filter_by(id=item.category_id).one()
+    item.image = filename
+
+    db.session.commit()
+
+
+@app.route('/items/<int:item_id>/delete', methods=['DELETE'])
+@authorized_item_operation
+@login_required
+def delete_item(item):
     db.session.delete(item)
     db.session.commit()
 
-    flash('Deleted item: {}'.format(item_name))
+    flash('Deleted item: {}'.format(item.name))
 
     return ''
 

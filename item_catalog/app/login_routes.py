@@ -42,7 +42,8 @@ def login():
         'login.html',
         title='Sign In',
         state=session['state'],
-        form=form
+        form=form,
+        client_id=CLIENT_ID
     )
 
 

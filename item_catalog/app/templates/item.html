@@ -4,7 +4,7 @@
 <div id="item-header">
     <h2>{{ item.name }}</h2>
 
-    {% if current_user.is_authenticated %}
+    {% if current_user.is_authenticated and current_user.owns(item) %}
     <div id="buttons">
         <button id="edit" class="icon-btn"><i class="fa fa-edit"></i></button>
         <button id="delete" class="icon-btn"><i class="fa fa-trash"></i></button>

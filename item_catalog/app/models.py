@@ -12,11 +12,16 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
 
+    items = db.relationship('Item')
+
     def set_password(self, plaintext_pw):
         self.password_hash = generate_password_hash(plaintext_pw)
 
     def check_password(self, plaintext_pw):
         return check_password_hash(self.password_hash, plaintext_pw)
+    
+    def owns(self, item):
+        return item in self.items
 
     @classmethod
     def from_email(cls, email):
@@ -55,6 +60,11 @@ class Item(db.Model):
     category = db.relationship(
         'Category',
         backref=db.backref('items', lazy=True)
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id')
     )
 
     def __repr__(self):
