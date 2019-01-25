@@ -14,10 +14,12 @@ a python's whoosh index (so you do not have to install anything)
 
 
 ## Setup
-1. Install sqlite3.
+1. Install posgresql. Create a psql user `admin` with password `dbpw` with createdb permission. Otherwise, create whatever user you want and export it as `ITEM_CATALOG_DB_USER` and `ITEM_CATALOG_DB_PASSWORD`, in order to connect to the db.
 2. Create a [python 3 environment](https://docs.python-guide.org/dev/virtualenvs/), activate that environment and install with pip:
     - flask
+    - psycopg2 (posgresql)
     - flask-sqlalchemy (simplifies queries, creates a scoped_session)
+    - sqlalchemy-utils
     - flask-wtf (form validation)
     - flask-uploads
     - oauth2client

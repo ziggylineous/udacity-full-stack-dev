@@ -1,5 +1,6 @@
 import os
 
+from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from app import db
@@ -9,15 +10,20 @@ import shutil
 from whoosh.fields import TEXT, ID, STORED, Schema
 from whoosh.index import create_in
 import json
+import config
 
 
 def drop_db():
-    path = Path('item_catalog.db')
+    DB_URL = config.Config.SQLALCHEMY_DATABASE_URI
+    print(DB_URL)
 
-    if path.exists() and path.is_file():
-        db.drop_all()
-        path.unlink()
-        print('dropped db')
+    if database_exists(DB_URL):
+        print('Deleting database.')
+        drop_database(DB_URL)
+    
+    if not database_exists(DB_URL):
+        print('Creating database.')
+        create_database(DB_URL)
 
 
 def check_type(type_str, dct):
