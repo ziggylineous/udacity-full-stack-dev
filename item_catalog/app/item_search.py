@@ -3,6 +3,7 @@ from sqlalchemy import event
 from app.models import Item
 from whoosh.qparser import QueryParser
 import os
+from os.path import abspath, dirname
 from whoosh.index import open_dir
 
 
@@ -74,10 +75,16 @@ def get_index():
 
     if _ix:
         return _ix
+    
+    IX_ABS_PATH = os.path.join(
+        abspath(dirname(__file__)),
+        '..',
+        'index'
+    )
 
-    if os.path.exists('index'):
+    if os.path.exists(IX_ABS_PATH):
         print('initializing index')
-        _ix = open_dir('index')
+        _ix = open_dir(IX_ABS_PATH)
 
         event.listen(db.session, 'before_commit', save_item_changes)
         event.listen(db.session, 'after_commit', save_items_in_index)
