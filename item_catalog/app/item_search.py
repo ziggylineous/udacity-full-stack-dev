@@ -2,9 +2,9 @@ from app import db
 from sqlalchemy import event
 from app.models import Item
 from whoosh.qparser import QueryParser
-import os
-from os.path import abspath, dirname
 from whoosh.index import open_dir
+from server_utils import full_path
+import os
 
 
 # this was taken from miguel grinberg's flask mega tutorial
@@ -76,8 +76,8 @@ def get_index():
     if _ix:
         return _ix
     
-    IX_ABS_PATH = os.path.join(
-        abspath(dirname(__file__)),
+    IX_ABS_PATH = full_path(
+        __file__,
         '..',
         'index'
     )

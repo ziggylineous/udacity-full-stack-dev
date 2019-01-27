@@ -5,6 +5,7 @@ import requests
 from app import app, CLIENT_ID, login
 from app.models import User
 from app.forms import LoginForm
+from server_utils import full_path
 
 # google authentication
 import string
@@ -82,7 +83,12 @@ def check_state():
 
 
 def exchange_auth_code(auth_code):
-    oauth_flow = flow_from_clientsecrets('client_secret.json', scope='')
+    CLIENT_SECRET_PATH = full_path(
+        __file__,
+        '..',
+        'client_secret.json'
+    )
+    oauth_flow = flow_from_clientsecrets(CLIENT_SECRET_PATH, scope='')
     oauth_flow.redirect_uri = 'postmessage'
 
     return oauth_flow.step2_exchange(auth_code)

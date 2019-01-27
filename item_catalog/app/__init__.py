@@ -6,8 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_uploads import UploadSet, IMAGES
 from flask_uploads import configure_uploads, patch_request_class
 import json
-import os
-from os.path import abspath, dirname
+from server_utils import full_path
 
 
 app = Flask(__name__)
@@ -17,8 +16,8 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = 'login'
 
-CLIENT_SECRET_PATH = os.path.join(
-    abspath(dirname(__file__)),
+CLIENT_SECRET_PATH = full_path(
+    __file__,
     '..',
     'client_secret.json'
 )
