@@ -8,7 +8,7 @@ class Config(object):
     #SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
     #    'sqlite:///' + os.path.join(base_dir, 'item_catalog.db')
     ITEM_CATALOG_DB_USER = os.environ.get('ITEM_CATALOG_DB_USER') or\
-                            'admin'
+                            'catalog'
     ITEM_CATALOG_DB_PASSWORD = os.environ.get('ITEM_CATALOG_DB_PASSWORD') or\
                                 'dbpw'
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://'
