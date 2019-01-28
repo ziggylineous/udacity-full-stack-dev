@@ -34,6 +34,7 @@ I've learnt these skills:
 6. `ssh grader@52.91.4.83 -p 22`
 7. I disabled password login
 8. Finally, I restarted ssh with `sudo service ssh restart`
+9. I also disabled `PermitRootLogin` setting it to `no`
 
 ---
 
