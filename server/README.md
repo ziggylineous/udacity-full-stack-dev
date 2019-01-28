@@ -13,7 +13,7 @@ I've learnt these skills:
 - IP: 35.175.171.255
 - SSH port: 2200
 - passphrase: fsnd
-- url: http://www.item-catalog-udacity.com.35.175.171.255.xip.io/login
+- url: http://www.item-catalog-udacity.com.35.175.171.255.xip.io/
 - connect command: ssh grader@35.175.171.255 -i ~/.ssh/server_config -p 2200
 
 ---
